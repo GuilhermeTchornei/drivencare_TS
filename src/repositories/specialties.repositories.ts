@@ -1,7 +1,6 @@
-import { QueryResult } from "pg";
-import db from "../config/database.js";
 import { specialtyEntity } from "../interfaces/specialty.interfaces.js";
+import prisma from "../config/database.js";
 
-export default async function getSpecialties(): Promise<QueryResult<specialtyEntity>> {
-    return await db.query(`SELECT * FROM specialties`);
+export default async function getSpecialties(): Promise<specialtyEntity[]> {
+  return await prisma.specialties.findMany();
 }

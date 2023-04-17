@@ -8,9 +8,9 @@ import userRouter from "./user.routes.js";
 
 const mainRouter = Router();
 
-mainRouter.use('/', [signinRouter, specialtyRouter, branchRouter]);
+mainRouter.use("/", [signinRouter, specialtyRouter, branchRouter]);
 mainRouter.use("/signup", signupRouter);
-mainRouter.use('/me', userRouter);
-mainRouter.use('/appointments', appointmentsRouter);
+mainRouter.use("/me", userRouter);
+mainRouter.use("/appointments", appointmentsRouter);
 
 export default mainRouter;

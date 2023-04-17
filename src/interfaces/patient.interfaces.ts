@@ -1,10 +1,10 @@
 export interface PatientEntity {
-    id: number,
-    name: string,
-    email: string,
-    password: string,
-    cpf: string
-};
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  cpf: string;
+}
 
 export type Patient = Omit<PatientEntity, "id">;
 

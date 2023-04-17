@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model appointments {
+  id         Int                @id @default(autoincrement())
+  doctor_id  Int
+  patient_id Int
+  status     appoitments_status @default(OPENED)
+  start_date DateTime           @db.Timestamp(6)
+  end_date   DateTime           @db.Timestamp(6)
+  doctors    doctors            @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients   patients           @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model branchs {
+  id      Int       @id(map: "branch_pkey") @default(autoincrement())
+  name    String    @unique(map: "branch_name_key") @db.VarChar(50)
+  doctors doctors[]
+}
+
+model doctors {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(100)
+  email        String         @unique @db.VarChar(50)
+  password     String         @db.VarChar(60)
+  crm_state_id Int
+  crm          String         @db.VarChar(6)
+  specialty_id Int
+  branch_id    Int
+  appointments appointments[]
+  branchs      branchs        @relation(fields: [branch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  states       states         @relation(fields: [crm_state_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  specialties  specialties    @relation(fields: [specialty_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model patients {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(100)
+  email        String         @unique @db.VarChar(50)
+  password     String         @db.VarChar(60)
+  cpf          String         @unique @db.VarChar(11)
+  appointments appointments[]
+}
+
+model specialties {
+  id      Int       @id(map: "specialty_pkey") @default(autoincrement())
+  name    String    @unique(map: "specialty_name_key") @db.VarChar(30)
+  doctors doctors[]
+}
+
+model states {
+  id      Int       @id @default(autoincrement())
+  uf      String    @unique(map: "states_name_key") @db.VarChar(2)
+  doctors doctors[]
+}
+
+enum appoitments_status {
+  OPENED
+  ACCEPTED
+  CANCELLED
+  FINISHED
+}

@@ -1,16 +1,24 @@
-export interface DoctorEntity {
-    id: number,
-    name: string,
-    email: string,
-    password: string,
-    crm_state: string | number,
-    crm: string,
-    specialty: string | number,
-    branch: string | number
-};
+import { string } from "joi";
 
-export type Doctor = Omit<DoctorEntity, "id">;
+export interface DoctorEntity<T extends string | number> {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  crm_state: T;
+  crm: string;
+  specialty: T;
+  branch: T;
+}
 
-export type CheckDoctor = Omit<Doctor, "name" | "password" | "specialty" | "branch">;
+export type Doctor = Omit<DoctorEntity<number>, "id">;
 
-export type GetDoctor = Omit<Doctor, "email" | "password" | "crm_state" | "crm">;
+export type CheckDoctor = Omit<
+  Doctor,
+  "name" | "password" | "specialty" | "branch"
+>;
+
+export type GetDoctor<T extends string | number> = Omit<
+  DoctorEntity<T>,
+  "id" | "email" | "password" | "crm_state" | "crm"
+>;

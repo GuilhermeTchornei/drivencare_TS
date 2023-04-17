@@ -1,22 +1,60 @@
-import db from '../config/database.js';
-import { Doctor, CheckDoctor } from '../interfaces/doctor.interfaces.js';
-import { CheckPatient, Patient } from '../interfaces/patient.interfaces.js';
+import prisma from "../config/database.js";
+import {
+  Doctor,
+  CheckDoctor,
+  DoctorEntity,
+} from "../interfaces/doctor.interfaces.js";
+import {
+  CheckPatient,
+  Patient,
+  PatientEntity,
+} from "../interfaces/patient.interfaces.js";
 
-async function checkPatient({ email, cpf }: CheckPatient) {
-    return await db.query(`SELECT * FROM patients WHERE email = $1 OR cpf=$2`, [email, cpf]);
+async function checkPatient({ email, cpf }: CheckPatient): Promise<boolean> {
+  const patient = await prisma.patients.findFirst({
+    where: {
+      email: email,
+      cpf: cpf,
+    },
+  });
+  return patient ? true : false;
 }
 
-async function createPatient({name, email, password, cpf}: Patient) {
-    await db.query(`INSERT INTO patients (name, email, password, cpf) VALUES ($1,$2,$3,$4)`, [name, email, password, cpf]);
+async function createPatient(patient: Patient) {
+  await prisma.patients.create({
+    data: {
+      ...patient,
+    },
+  });
 }
 
-async function checkDoctor({ email, crm_state, crm }: CheckDoctor) {
-    return await db.query(`SELECT * FROM doctors WHERE email = $1 OR crm_state_id=$2 AND crm=$3`, [email, crm_state, crm]);
+async function checkDoctor({
+  email,
+  crm_state,
+  crm,
+}: CheckDoctor): Promise<boolean> {
+  const doctor = await prisma.doctors.findFirst({
+    where: {
+      email: email,
+      crm_state_id: crm_state,
+      crm: crm,
+    },
+  });
+  return doctor ? true : false;
 }
 
-async function createDoctor({name, email, password, crm_state, crm, specialty, branch}: Doctor) {
-    await db.query(`INSERT INTO doctors (name, email, password, crm_state_id, crm, specialty_id, branch_id) VALUES ($1,$2,$3,$4,$5,$6,$7)`,
-        [name, email, password, crm_state, crm, specialty, branch]);
+async function createDoctor(doctor: Doctor) {
+  await prisma.doctors.create({
+    data: {
+      name: doctor.name,
+      email: doctor.email,
+      password: doctor.password,
+      branch_id: doctor.branch,
+      crm_state_id: doctor.crm_state,
+      crm: doctor.crm,
+      specialty_id: doctor.specialty,
+    },
+  });
 }
 
 export default { checkPatient, createPatient, checkDoctor, createDoctor };

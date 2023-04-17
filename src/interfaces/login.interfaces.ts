@@ -1,15 +1,15 @@
 export enum Type {
-    Doctor = 'doctor',
-    Patient = 'patient'
-};
+  Doctor = "doctor",
+  Patient = "patient",
+}
 
 export interface Login {
-    email: string,
-    password: string,
-    type: Type
-};
+  email: string;
+  password: string;
+  type: Type;
+}
 
 export interface AuthUser {
-    id: number,
-    type: Type
-};
+  id: number;
+  type: Type;
+}
