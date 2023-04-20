@@ -1,8 +1,8 @@
 import httpStatus from "http-status";
 import { NextFunction, Request, Response } from "express";
-import signinServices from "../services/signin.services.js";
-import { Login, Type } from "../interfaces/login.interfaces.js";
-import errors from "../errors/index.js";
+import signinServices from "@/services/signin.services.js";
+import { Login, Type } from "@/interfaces/login.interfaces.js";
+import errors from "@/errors/index.js";
 
 async function user(req: Request, res: Response, next: NextFunction) {
   const { email, password, type } = req.body as Login;
@@ -11,7 +11,7 @@ async function user(req: Request, res: Response, next: NextFunction) {
     if (!(type === Type.Patient || type === Type.Doctor))
       throw errors.invalidCredentials();
 
-    const token = await signinServices.user({ email, password, type });
+    const token: string = await signinServices.user({ email, password, type });
     res.status(httpStatus.OK).send({ token });
   } catch (error) {
     next(error);

@@ -1,23 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 
-export default function handleApplicationErrors(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export default function handleApplicationErrors(err: Error, req: Request, res: Response, _: NextFunction) {
   switch (err.name) {
     case "UnprocessableContent":
-      return res
-        .status(httpStatus.UNPROCESSABLE_ENTITY)
-        .send({ message: err.message });
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).send({ message: err.message });
     case "DuplicatedData":
       return res.status(httpStatus.CONFLICT).send({ message: err.message });
     case "InternalError":
-      return res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ message: err.message });
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: err.message });
     case "invalidCredentials":
       return res.status(httpStatus.UNAUTHORIZED).send({ message: err.message });
     case "Unauthorized":

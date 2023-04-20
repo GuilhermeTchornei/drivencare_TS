@@ -1,5 +1,5 @@
 import { Router } from "express";
-import branchsControllers from "../controllers/branchs.controllers.js";
+import branchsControllers from "@/controllers/branchs.controllers.js";
 
 const branchRouter = Router();
 

@@ -1,42 +1,34 @@
 import httpStatus from "http-status";
-import appointmentsRepositories from "../repositories/appointments.repositories.js";
+import appointmentsRepositories from "@/repositories/appointments.repositories.js";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import "dayjs/locale/pt-br";
 import customParse from "dayjs/plugin/customParseFormat.js";
 import { NextFunction, Request, Response } from "express";
-import appointmentsServices from "../services/appointments.services.js";
-import errors from "../errors/index.js";
-import { AuthUser, Type } from "../interfaces/login.interfaces.js";
-import { Status } from "../interfaces/appointment.interfaces.js";
-import { GetDoctor } from "../interfaces/doctor.interfaces.js";
+import appointmentsServices from "@/services/appointments.services.js";
+import errors from "@/errors/index.js";
+import { AuthUser, Type } from "@/interfaces/login.interfaces.js";
+import { AppointmentsToFront, Status } from "@/interfaces/appointment.interfaces.js";
+import { GetDoctorParams, GetDoctorReturn } from "@/interfaces/doctor.interfaces.js";
 
 async function doctorsList(req: Request, res: Response, next: NextFunction) {
-  const { name, specialty, branch } = req.body as GetDoctor<number>;
+  const { name, specialty, branch } = req.body as GetDoctorParams;
   try {
-    const doctors = await appointmentsRepositories.getDoctors({
-      name,
-      specialty,
-      branch,
-    });
+    const doctors: GetDoctorReturn[] = await appointmentsRepositories.getDoctors({ name, specialty, branch, });
     res.status(httpStatus.OK).send(doctors);
   } catch (error) {
     next(error);
   }
 }
 
-async function doctorsSchedule(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+async function doctorsSchedule(req: Request, res: Response, next: NextFunction) {
   const doctorId = +req.params.doctorId;
 
   if (isNaN(doctorId))
     throw errors.badRequest("The request contains invalid parameters");
 
   try {
-    const schedule = await appointmentsServices.doctorsSchedule(doctorId);
+    const schedule: AppointmentsToFront[] = await appointmentsServices.doctorsSchedule(doctorId);
     res.status(httpStatus.OK).send(schedule);
   } catch (error) {
     next(error);
@@ -45,7 +37,7 @@ async function doctorsSchedule(
 
 async function create(req: Request, res: Response, next: NextFunction) {
   const doctorId = +req.params.doctorId;
-  const date = req.body.date;
+  const date: Date = req.body.date;
   const { id } = res.locals.user;
   dayjs.extend(customParse);
   dayjs.extend(utc);
@@ -55,6 +47,7 @@ async function create(req: Request, res: Response, next: NextFunction) {
     const formattedDate: Dayjs = dayjs.utc(date, "DD-MM-YY-HH");
     if (isNaN(doctorId))
       throw errors.badRequest("The request contains invalid parameters");
+
     await appointmentsServices.bookAppointment({
       doctorId,
       patientId: id,
@@ -92,18 +85,16 @@ async function update(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function deleteAppointment(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+async function deleteAppointment(req: Request, res: Response, next: NextFunction) {
   const { id, type } = res.locals.user as AuthUser;
   const appointmentId = +req.params.appointmentId;
 
   try {
     if (isNaN(appointmentId))
       throw errors.badRequest("The request contains invalid parameters");
+
     if (type !== Type.Patient) throw errors.unauthorized();
+
     await appointmentsServices.deleteAppointment(id, appointmentId);
     res.sendStatus(httpStatus.NO_CONTENT);
   } catch (errors) {

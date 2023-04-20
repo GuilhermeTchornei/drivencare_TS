@@ -1,42 +1,31 @@
 import dayjs from "dayjs";
-import errors from "../errors/index.js";
-import userRepositories from "../repositories/user.repositories.js";
-import appointmentsRepositories from "../repositories/appointments.repositories.js";
-import {
-  GetAppointment,
-  AppointmentToFront,
-  Status,
-} from "../interfaces/appointment.interfaces.js";
+import errors from "@/errors/index.js";
+import userRepositories from "@/repositories/user.repositories.js";
+import appointmentsRepositories from "@/repositories/appointments.repositories.js";
+import { GetAppointment, AppointmentsToFront, Status, } from "@/interfaces/appointment.interfaces.js";
+import { appointments, doctors } from "@prisma/client";
 
-async function doctorsSchedule(
-  doctorId: number
-): Promise<AppointmentToFront[]> {
-  const doctor = await userRepositories.getDoctorById(doctorId);
+async function doctorsSchedule(doctorId: number): Promise<AppointmentsToFront[]> {
+  const doctor: doctors = await userRepositories.getDoctorById(doctorId);
   if (!doctor) throw errors.notFound();
 
   try {
-    const schedule = await appointmentsRepositories.getScheduleById(doctorId);
+    const schedule: AppointmentsToFront[] = await appointmentsRepositories.getScheduleById(doctorId);
     return schedule;
   } catch (error) {
     throw errors.internalError();
   }
 }
 
-async function bookAppointment({
-  doctorId,
-  patientId,
-  startDate,
-}: GetAppointment) {
-  if (startDate.diff(dayjs()) < 0) throw errors.badRequest("date is invalid");
+async function bookAppointment({ doctorId, patientId, startDate, }: GetAppointment) {
+  if (startDate.diff(dayjs()) < 0)
+    throw errors.badRequest("date is invalid");
   if (startDate.day() === 0 || startDate.day() === 6)
     throw errors.badRequest("day is invalid");
   if (startDate.hour() < 9 || startDate.hour() === 12 || startDate.hour() > 18)
     throw errors.badRequest("hour is invalid");
 
-  const appointment = await appointmentsRepositories.getScheduleByIdAndDate(
-    doctorId,
-    startDate
-  );
+  const appointment: appointments = await appointmentsRepositories.getScheduleByIdAndDate(doctorId, startDate);
   if (appointment) throw errors.duplicatedData("time slot already booked");
 
   const endDate = startDate.add(1, "hour");
@@ -49,11 +38,7 @@ async function bookAppointment({
 }
 
 async function update(doctorId: number, status: Status, appointmentId: number) {
-  const appointment =
-    await appointmentsRepositories.getAppointmentByIdAndDoctor(
-      appointmentId,
-      doctorId
-    );
+  const appointment: appointments = await appointmentsRepositories.getAppointmentByIdAndDoctor(appointmentId, doctorId);
   if (!appointment) throw errors.notFound();
 
   try {
@@ -64,7 +49,7 @@ async function update(doctorId: number, status: Status, appointmentId: number) {
 }
 
 async function deleteAppointment(patientId: number, appointmentId: number) {
-  const appointment =
+  const appointment: appointments =
     await appointmentsRepositories.getAppointmentByIdAndPatient(
       patientId,
       appointmentId

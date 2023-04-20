@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import signinRepositories from "../repositories/signin.repositories.js";
-import errors from "../errors/index.js";
-import { Login, Type } from "../interfaces/login.interfaces.js";
+import signinRepositories from "@/repositories/signin.repositories.js";
+import errors from "@/errors/index.js";
+import { Login, Type } from "@/interfaces/login.interfaces.js";
 
 dotenv.config();
 

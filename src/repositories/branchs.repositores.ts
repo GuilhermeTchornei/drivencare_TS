@@ -1,7 +1,6 @@
-import { branchEntity } from "../interfaces/branch.interfaces.js";
-import prisma from "../config/database.js";
+import prisma from "@/config/database.js";
+import { branchs } from "@prisma/client";
 
-export default async function getBranchs(): Promise<branchEntity[]> {
-  //return await db.query(`SELECT * FROM branchs`);
+export default async function getBranchs(): Promise<branchs[]> {
   return await prisma.branchs.findMany();
 }

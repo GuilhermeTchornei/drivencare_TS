@@ -1,11 +1,5 @@
-export interface PatientEntity {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  cpf: string;
-}
+import { patients } from "@prisma/client";
 
-export type Patient = Omit<PatientEntity, "id">;
+export type InputPatient = Omit<patients, "id">;
 
-export type CheckPatient = Omit<Patient, "name" | "password">;
+export type CheckPatient = Omit<InputPatient, "name" | "password">;

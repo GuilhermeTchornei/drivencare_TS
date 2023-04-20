@@ -1,5 +1,5 @@
 import { Router } from "express";
-import specialtiesControllers from "../controllers/specialties.controllers.js";
+import specialtiesControllers from "@/controllers/specialties.controllers.js";
 
 const specialtyRouter = Router();
 

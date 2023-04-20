@@ -7,7 +7,7 @@ export enum Status {
   Finished = "FINISHED",
 }
 
-export interface AppointmentToFront {
+export interface AppointmentsToFront {
   doctor_name: string;
   specialty: string;
   branch: string;

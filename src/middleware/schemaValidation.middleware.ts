@@ -1,6 +1,6 @@
 import { Schema } from "joi";
 import { NextFunction, Request, Response } from "express";
-import errors from "../errors/index.js";
+import errors from "@/errors/index.js";
 
 export function schemaValidation(schema: Schema) {
   return (req: Request, _: Response, next: NextFunction) => {

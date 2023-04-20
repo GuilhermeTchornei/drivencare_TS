@@ -1,14 +1,6 @@
-import prisma from "../config/database.js";
-import {
-  Doctor,
-  CheckDoctor,
-  DoctorEntity,
-} from "../interfaces/doctor.interfaces.js";
-import {
-  CheckPatient,
-  Patient,
-  PatientEntity,
-} from "../interfaces/patient.interfaces.js";
+import prisma from "@/config/database.js";
+import { InputDoctor, CheckDoctor } from "@/interfaces/doctor.interfaces.js";
+import { CheckPatient, InputPatient } from "@/interfaces/patient.interfaces.js";
 
 async function checkPatient({ email, cpf }: CheckPatient): Promise<boolean> {
   const patient = await prisma.patients.findFirst({
@@ -20,7 +12,7 @@ async function checkPatient({ email, cpf }: CheckPatient): Promise<boolean> {
   return patient ? true : false;
 }
 
-async function createPatient(patient: Patient) {
+async function createPatient(patient: InputPatient) {
   await prisma.patients.create({
     data: {
       ...patient,
@@ -28,11 +20,7 @@ async function createPatient(patient: Patient) {
   });
 }
 
-async function checkDoctor({
-  email,
-  crm_state,
-  crm,
-}: CheckDoctor): Promise<boolean> {
+async function checkDoctor({ email, crm_state, crm }: CheckDoctor): Promise<boolean> {
   const doctor = await prisma.doctors.findFirst({
     where: {
       email: email,
@@ -43,7 +31,7 @@ async function checkDoctor({
   return doctor ? true : false;
 }
 
-async function createDoctor(doctor: Doctor) {
+async function createDoctor(doctor: InputDoctor) {
   await prisma.doctors.create({
     data: {
       name: doctor.name,

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { schemaValidation } from "../middleware/schemaValidation.middleware.js";
-import user from "../schemas/signin.schemas.js";
-import signinControllers from "../controllers/signin.controllers.js";
+import { schemaValidation } from "@/middleware/schemaValidation.middleware.js";
+import user from "@/schemas/signin.schemas.js";
+import signinControllers from "@/controllers/signin.controllers.js";
 
 const signinRouter = Router();
 

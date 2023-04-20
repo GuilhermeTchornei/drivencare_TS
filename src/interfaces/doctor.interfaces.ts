@@ -1,24 +1,12 @@
-import { string } from "joi";
+import { doctors } from "@prisma/client";
 
-export interface DoctorEntity<T extends string | number> {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  crm_state: T;
-  crm: string;
-  specialty: T;
-  branch: T;
-}
+export type InputDoctor = Omit<doctors, "id">;
 
-export type Doctor = Omit<DoctorEntity<number>, "id">;
+export type CheckDoctor = Omit<InputDoctor, "name" | "password" | "specialty" | "branch">;
 
-export type CheckDoctor = Omit<
-  Doctor,
-  "name" | "password" | "specialty" | "branch"
->;
+export type GetDoctorParams = Pick<doctors, "name" | "branch" | "specialty">;
 
-export type GetDoctor<T extends string | number> = Omit<
-  DoctorEntity<T>,
-  "id" | "email" | "password" | "crm_state" | "crm"
->;
+export type GetDoctorReturn = Omit<GetDoctorParams, "branch" | "specialty"> & {
+  branch: string,
+  specialty: string
+};

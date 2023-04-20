@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
-import errors from "../errors/index.js";
-import { Doctor } from "../interfaces/doctor.interfaces.js";
-import { Patient } from "../interfaces/patient.interfaces.js";
-import signupRepositories from "../repositories/signup.repositories.js";
+import errors from "@/errors/index.js";
+import { InputDoctor } from "@/interfaces/doctor.interfaces.js";
+import { InputPatient } from "@/interfaces/patient.interfaces.js";
+import signupRepositories from "@/repositories/signup.repositories.js";
 
-async function createPatient({ name, email, password, cpf }: Patient) {
+async function createPatient({ name, email, password, cpf }: InputPatient) {
   const patient = await signupRepositories.checkPatient({ email, cpf });
   if (patient) throw errors.duplicatedData("email or cpf");
 
@@ -21,20 +21,8 @@ async function createPatient({ name, email, password, cpf }: Patient) {
   }
 }
 
-async function createDoctor({
-  name,
-  email,
-  password,
-  crm_state,
-  crm,
-  specialty,
-  branch,
-}: Doctor) {
-  const doctor = await signupRepositories.checkDoctor({
-    email,
-    crm_state,
-    crm,
-  });
+async function createDoctor({ name, email, password, crm_state, crm, specialty, branch, }: InputDoctor) {
+  const doctor = await signupRepositories.checkDoctor({ email, crm_state, crm, });
   if (doctor) throw errors.duplicatedData("email or crm");
 
   try {
